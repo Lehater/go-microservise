@@ -10,7 +10,6 @@ import (
 
 var ErrUserNotFound = errors.New("user not found")
 
-// Интерфейс репозитория — для возможной подмены на БД в будущем.
 type UserRepository interface {
 	Create(user models.User) (models.User, error)
 	GetAll() ([]models.User, error)
@@ -20,7 +19,6 @@ type UserRepository interface {
 }
 
 // Потокобезопасный in-memory репозиторий.
-// Внутри обычная map + RWMutex.
 type InMemoryUserRepository struct {
 	mu     sync.RWMutex
 	data   map[int]models.User

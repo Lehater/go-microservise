@@ -13,7 +13,6 @@ import (
 )
 
 // IntegrationService — обёртка над MinIO/S3.
-// Для ДЗ достаточно одного метода UploadTestObject.
 type IntegrationService struct {
 	client *minio.Client
 	bucket string
@@ -35,8 +34,6 @@ func NewIntegrationService(endpoint, accessKey, secretKey, bucket string, useSSL
 	return svc, nil
 }
 
-// UploadTestObject — простая операция, чтобы продемонстрировать работоспособность.
-// В реальном проекте сюда можно передавать audit-логи и т.п.
 func (s *IntegrationService) UploadTestObject(ctx context.Context, objectName string, content string) error {
 	reader := bytes.NewReader([]byte(content))
 	_, err := s.client.PutObject(ctx, s.bucket, objectName, reader, int64(reader.Len()), minio.PutObjectOptions{
@@ -49,7 +46,6 @@ func (s *IntegrationService) UploadTestObject(ctx context.Context, objectName st
 	return nil
 }
 
-// Helper для чтения объекта (если нужно):
 func (s *IntegrationService) GetObjectContent(ctx context.Context, objectName string) (string, error) {
 	obj, err := s.client.GetObject(ctx, s.bucket, objectName, minio.GetObjectOptions{})
 	if err != nil {

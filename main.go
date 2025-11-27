@@ -44,29 +44,16 @@ func main() {
 		log.Fatalf("failed to init integration service: %v", err)
 	}
 
-	// HTTP-роутинг.
 	r := mux.NewRouter()
 
-	// Метрики.
 	metrics.InitMetrics()
 	r.Handle("/metrics", metrics.Handler()).Methods(http.MethodGet)
-
-	// Основное API — с лимитером
 
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(utils.RateLimitMiddleware)
 	handlers.RegisterUserRoutes(api, userService)
 	handlers.RegisterIntegrationRoutes(api, integrationService)
 
-	// api := r.PathPrefix("/api").Subrouter()
-	// api.Use(utils.RateLimitMiddleware)
-	// handlers.RegisterUserRoutes(api, userService)
-
-	// API без лимитера — для wrk
-	// unlimitedAPI := r.PathPrefix("/api-unlimited").Subrouter()
-	// handlers.RegisterUserRoutes(unlimitedAPI, userService)
-
-	// Оборачиваем только метриками
 	handler := metrics.MetricsMiddleware(r)
 
 	log.Println("Listening on :8080")

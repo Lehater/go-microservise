@@ -37,7 +37,6 @@ func NewAsyncAuditLogger(buffer int) *AsyncAuditLogger {
 }
 
 // LogAction — неблокирующая отправка в канал.
-// При переполнении буфера событие можно дропнуть.
 func (l *AsyncAuditLogger) LogAction(action string, user models.User) {
 	select {
 	case l.ch <- AuditEvent{Action: action, User: user}:
@@ -47,7 +46,6 @@ func (l *AsyncAuditLogger) LogAction(action string, user models.User) {
 }
 
 // StubNotificationSender — заглушка для уведомлений.
-// В реальности здесь могла бы быть отправка в очередь, email и т.п.
 type StubNotificationSender struct {
 	logger *log.Logger
 }

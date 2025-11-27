@@ -36,7 +36,7 @@ func InitMetrics() {
 func MetricsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		path := r.URL.Path // для реального прод — лучше нормализовать
+		path := r.URL.Path
 
 		totalRequests.WithLabelValues(r.Method, path).Inc()
 		next.ServeHTTP(w, r)
